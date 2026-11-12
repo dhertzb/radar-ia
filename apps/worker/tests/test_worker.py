@@ -72,6 +72,25 @@ def test_runtime_settings_reject_empty_sec_user_agent_in_live_mode():
         validate_runtime_settings(cfg, False)
 
 
+def test_runtime_settings_reject_sec_user_agent_without_email():
+    cfg = Settings(
+        api_url="https://example.com/api/v1",
+        ingest_token="secret",
+        sec_user_agent="Radar IA https://github.com/dhertzb/radar-ia",
+    )
+    with pytest.raises(ValueError, match="e-mail"):
+        validate_runtime_settings(cfg, False)
+
+
+def test_runtime_settings_accept_sec_user_agent_with_email():
+    cfg = Settings(
+        api_url="https://example.com/api/v1",
+        ingest_token="secret",
+        sec_user_agent="Radar IA contact@example.com",
+    )
+    validate_runtime_settings(cfg, False)
+
+
 def test_runtime_settings_allow_demo_without_sec_user_agent():
     cfg = Settings(api_url="https://example.com/api/v1", ingest_token="secret", sec_user_agent="")
     validate_runtime_settings(cfg, True)

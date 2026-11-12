@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import re
 from datetime import UTC, date, datetime
 from urllib.parse import urlparse
 
@@ -27,8 +28,8 @@ def validate_runtime_settings(cfg: Settings, demo: bool) -> None:
         raise ValueError("API_URL deve ser uma URL completa com http:// ou https://")
     if not cfg.ingest_token.strip():
         raise ValueError("INGEST_TOKEN não foi configurado")
-    if not demo and not cfg.sec_user_agent.strip():
-        raise ValueError("SEC_USER_AGENT não foi configurado")
+    if not demo and not re.search(r"\S+@\S+\.\S+", cfg.sec_user_agent):
+        raise ValueError("SEC_USER_AGENT deve incluir um e-mail de contato válido")
 
 
 async def execute(demo: bool, day: date):
@@ -84,8 +85,11 @@ async def execute(demo: bool, day: date):
         documents.extend(rss)
         failures.extend(failed)
         if not evidence:
-            sources = ", ".join(f.source for f in failures) or "nenhuma fonte respondeu"
-            raise RuntimeError(f"Nenhuma evidência primária foi coletada. Falhas: {sources}")
+            details = "; ".join(f"{f.source}: {f.message}" for f in failures)
+            raise RuntimeError(
+                "Nenhuma evidência primária foi coletada. "
+                f"Falhas: {details or 'nenhuma fonte respondeu'}"
+            )
     if cfg.openai_api_key and not demo:
         report = await openai_analysis(
             day.isoformat(),

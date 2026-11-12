@@ -1,7 +1,7 @@
 const base =
-  process.env.NEXT_PUBLIC_API_URL ??
-  (process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}/api/v1`
+  process.env.API_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}/api/v1`
     : "http://localhost:3000/api/v1");
 export async function api<T>(path: string): Promise<T> {
   const response = await fetch(`${base}${path}`, { cache: "no-store" });

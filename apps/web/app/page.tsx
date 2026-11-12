@@ -17,7 +17,9 @@ export default async function Home() {
       api<Company[]>("/companies"),
       api<any[]>("/events"),
     ]);
-  } catch {}
+  } catch (error) {
+    console.error("Failed to load dashboard data", error);
+  }
   return (
     <main className="grid-paper">
       <div className="max-w-7xl mx-auto px-5 pt-12">

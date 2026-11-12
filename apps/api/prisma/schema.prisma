@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+enum RunStatus {
+  STARTED
+  SUCCESS
+  FAILED
+}
+enum RunMode {
+  LIVE
+  DEMO
+  LOCAL
+}
+enum Signal {
+  AGGRAVATION
+  STABILIZATION
+  RECOVERY
+  INDETERMINATE
+}
+enum Confidence {
+  CONFIRMED
+  REPORTED
+  RUMOR
+}
+enum EventType {
+  CANCELLATION
+  DELAY
+  RENEGOTIATION
+  CONTRACT
+  FINANCING
+}
+model Company {
+  id String @id @default(cuid())
+  slug String @unique
+  name String
+  ticker String?
+  region String
+  assets Asset[]
+  documents Document[]
+  evidence Evidence[]
+  events Event[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Asset {
+  id String @id @default(cuid())
+  stableKey String @unique
+  companyId String
+  company Company @relation(fields: [companyId], references: [id])
+  symbol String
+  exchange String
+  timezone String
+  currency String
+  publicDisplayAllowed Boolean @default(false)
+  closes MarketClose[]
+}
+model MarketClose {
+  id String @id @default(cuid())
+  assetId String
+  asset Asset @relation(fields: [assetId], references: [id])
+  tradingDate DateTime @db.Date
+  close Decimal @db.Decimal(20, 6)
+  provider String
+  redistributable Boolean
+  @@unique([assetId, tradingDate, provider])
+}
+model Document {
+  id String @id @default(cuid())
+  stableKey String @unique
+  companyId String?
+  company Company? @relation(fields: [companyId], references: [id])
+  title String
+  url String
+  source String
+  publishedAt DateTime
+  isPrimary Boolean
+  evidence Evidence[]
+}
+model Evidence {
+  id String @id @default(cuid())
+  stableKey String @unique
+  documentId String
+  document Document @relation(fields: [documentId], references: [id])
+  companyId String?
+  company Company? @relation(fields: [companyId], references: [id])
+  claim String
+  excerpt String
+  sourceUrl String
+  publishedAt DateTime
+  confidence Confidence
+  isPrimary Boolean
+  events Event[]
+  reports ReportEvidence[]
+}
+model Event {
+  id String @id @default(cuid())
+  stableKey String @unique
+  companyId String
+  company Company @relation(fields: [companyId], references: [id])
+  evidenceId String
+  evidence Evidence @relation(fields: [evidenceId], references: [id])
+  type EventType
+  title String
+  region String
+  occurredAt DateTime
+  confidence Confidence
+}
+model Run {
+  id String @id @default(cuid())
+  stableKey String @unique
+  startedAt DateTime
+  finishedAt DateTime?
+  mode RunMode
+  status RunStatus @default(STARTED)
+  sourceFailures Json @default("[]")
+  error String?
+  report Report?
+  createdAt DateTime @default(now())
+}
+model Report {
+  id String @id @default(cuid())
+  stableKey String @unique
+  runId String @unique
+  run Run @relation(fields: [runId], references: [id])
+  reportDate DateTime @db.Date
+  title String
+  summary String
+  signal Signal
+  riskScore Int?
+  coverage Float
+  minimumCoverage Float
+  missingData Json
+  sections Json
+  evidence ReportEvidence[]
+  publishedAt DateTime @default(now())
+}
+model ReportEvidence {
+  reportId String
+  evidenceId String
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  evidence Evidence @relation(fields: [evidenceId], references: [id])
+  @@id([reportId, evidenceId])
+}

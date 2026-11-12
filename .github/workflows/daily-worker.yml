@@ -29,6 +29,6 @@ jobs:
           INGEST_TOKEN: ${{ secrets.INGEST_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-4.1-mini' }}
-          SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT }}
+          SEC_USER_AGENT: ${{ vars.SEC_USER_AGENT || 'Radar IA https://github.com/dhertzb/radar-ia' }}
           NEWS_RSS_URLS: ${{ vars.NEWS_RSS_URLS }}
         run: uv run radar-ia-worker run ${{ inputs.demo && '--demo' || '' }}

@@ -192,7 +192,11 @@ export const radar = {
       where: { stableKey: p.run.stableKey },
       include: { report: true },
     });
-    if (existing?.status === "SUCCESS")
+    if (
+      existing?.status === "SUCCESS" &&
+      existing.report &&
+      existing.report.coverage >= existing.report.minimumCoverage
+    )
       return {
         status: "already-published",
         runId: existing.id,
@@ -208,7 +212,11 @@ export const radar = {
             where: { stableKey: p.run.stableKey },
             include: { report: true },
           });
-          if (concurrent?.status === "SUCCESS")
+          if (
+            concurrent?.status === "SUCCESS" &&
+            concurrent.report &&
+            concurrent.report.coverage >= concurrent.report.minimumCoverage
+          )
             return {
               status: "already-published",
               runId: concurrent.id,

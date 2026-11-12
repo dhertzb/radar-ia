@@ -76,7 +76,7 @@ Os testes cobrem referências inválidas da IA, cobertura insuficiente, cálculo
 ## Implantação
 
 1. O projeto Neon fica vinculado pela `.neon`; `neon deploy` atualiza `.env.local` com `DATABASE_URL` (pooled) e `DATABASE_URL_UNPOOLED` (migrações).
-2. Importe o monorepo na Vercel com root na raiz e configure `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `INGEST_TOKEN` e `WEB_ORIGIN`. A API será publicada em `https://SEU_SITE/api/v1`.
+2. Importe o monorepo na Vercel com **Root Directory** em `apps/web`, habilite **Include source files outside of the Root Directory** e configure `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `INGEST_TOKEN` e `WEB_ORIGIN`. A API será publicada em `https://SEU_SITE/api/v1`. O `apps/web/vercel.json` mantém o build do pacote compartilhado e usa `.next` como diretório de saída relativo à aplicação.
 3. No GitHub, crie environment `production`, secrets `API_URL=https://SEU_SITE/api/v1`, `INGEST_TOKEN`, `OPENAI_API_KEY`, e variables `SEC_USER_AGENT`, `NEWS_RSS_URLS`, `OPENAI_MODEL`.
 4. Rode `Radar diário` manualmente, confirme `/api/v1/status`, `/api/v1/reports/latest` e o site. O cron executa às 22:00 UTC, equivalente a 19:00 em `America/Sao_Paulo` no regime atual; revise se a legislação de horário de verão mudar.
 

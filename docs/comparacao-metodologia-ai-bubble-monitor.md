@@ -13,31 +13,31 @@ Nossa principal vantagem é a rastreabilidade entre documento, evidência, event
 
 ## Comparação
 
-| Aspecto | AI Bubble Monitor 2.0 | Radar IA |
-|---|---|---|
-| Objetivo | Medir euforia, fragilidade e distância entre demanda e investimento | Detectar estresse de mercado, eventos negativos, financiamento e risco documental |
-| Componentes | Sete pilares e dezenas de métricas | Quatro componentes simples |
-| Universo | Cesta de líderes de IA e benchmarks de mercado | Nvidia, AMD, CoreWeave e Oracle |
-| Histórico | Séries desde 1990; algumas desde 1926 | Sem calibração histórica |
-| Normalização | Percentil contra o histórico disponível | Multiplicadores fixos e limites manuais |
-| Validação | Backtest contra bolhas e períodos tranquilos | Testes de código, sem backtest econômico |
-| Dados ausentes | Pesos redistribuídos; dados vencidos perdem peso gradualmente | Componentes ausentes ficam em zero; nota é anulada abaixo de 60% de cobertura |
-| Revisões | Metodologia versionada e histórico imutável | Execuções idempotentes, sem versão metodológica explícita |
-| Evidências | Fontes e metodologia públicas | Vínculo direto entre documento, evidência, evento e relatório |
+| Aspecto        | AI Bubble Monitor 2.0                                               | Radar IA                                                                          |
+| -------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Objetivo       | Medir euforia, fragilidade e distância entre demanda e investimento | Detectar estresse de mercado, eventos negativos, financiamento e risco documental |
+| Componentes    | Sete pilares e dezenas de métricas                                  | Quatro componentes simples                                                        |
+| Universo       | Cesta de líderes de IA e benchmarks de mercado                      | Nvidia, AMD, CoreWeave e Oracle                                                   |
+| Histórico      | Séries desde 1990; algumas desde 1926                               | Sem calibração histórica                                                          |
+| Normalização   | Percentil contra o histórico disponível                             | Multiplicadores fixos e limites manuais                                           |
+| Validação      | Backtest contra bolhas e períodos tranquilos                        | Testes de código, sem backtest econômico                                          |
+| Dados ausentes | Pesos redistribuídos; dados vencidos perdem peso gradualmente       | Componentes ausentes ficam em zero; nota é anulada abaixo de 60% de cobertura     |
+| Revisões       | Metodologia versionada e histórico imutável                         | Execuções idempotentes, sem versão metodológica explícita                         |
+| Evidências     | Fontes e metodologia públicas                                       | Vínculo direto entre documento, evidência, evento e relatório                     |
 
 ## Metodologia do AI Bubble Monitor 2.0
 
 Os sete pilares informados são:
 
-| Pilar | Peso | Eixo principal |
-|---|---:|---|
-| Valuation & concentration | 20% | Euforia |
-| Price dynamics | 10% | Euforia |
-| Capex strain | 20% | Fragilidade |
-| Credit & financing | 15% | Fragilidade |
-| Leverage & positioning | 15% | Ambos |
-| Demand reality check | 15% | Demanda |
-| Narrative & attention | 5% | Euforia |
+| Pilar                     | Peso | Eixo principal |
+| ------------------------- | ---: | -------------- |
+| Valuation & concentration |  20% | Euforia        |
+| Price dynamics            |  10% | Euforia        |
+| Capex strain              |  20% | Fragilidade    |
+| Credit & financing        |  15% | Fragilidade    |
+| Leverage & positioning    |  15% | Ambos          |
+| Demand reality check      |  15% | Demanda        |
+| Narrative & attention     |   5% | Euforia        |
 
 Características relevantes:
 
@@ -55,12 +55,12 @@ Características relevantes:
 
 Implementação principal: `apps/worker/src/radar_worker/indicators.py`.
 
-| Componente | Peso | Regra atual |
-|---|---:|---|
-| Estresse de mercado | 30% | Média da variação absoluta de 20 pregões × 4, limitada a 100 |
-| Eventos negativos | 35% | Cancelamento, atraso ou renegociação × 25, limitado a 100 |
-| Estresse de financiamento | 20% | Eventos de financiamento × 20, limitado a 100 |
-| Risco documental | 15% | Eventos negativos × 15, limitado a 100 |
+| Componente                | Peso | Regra atual                                                  |
+| ------------------------- | ---: | ------------------------------------------------------------ |
+| Estresse de mercado       |  30% | Média da variação absoluta de 20 pregões × 4, limitada a 100 |
+| Eventos negativos         |  35% | Cancelamento, atraso ou renegociação × 25, limitado a 100    |
+| Estresse de financiamento |  20% | Eventos de financiamento × 20, limitado a 100                |
+| Risco documental          |  15% | Eventos negativos × 15, limitado a 100                       |
 
 A cobertura mínima é de 60%. Abaixo desse valor, `riskScore` fica `null`.
 

@@ -48,12 +48,12 @@ docker compose run --rm worker --demo
 
 O índice (0–100) é calculado em `apps/worker/src/radar_worker/indicators.py`:
 
-| Componente | Peso | Regra atual |
-|---|---:|---|
-| estresse de mercado | 30% | média do valor absoluto da variação de 20 pregões × 4, limitada a 100 |
-| eventos negativos | 35% | cancelamento, atraso ou renegociação × 25, limitado a 100 |
-| estresse de financiamento | 20% | eventos de financiamento × 20, limitado a 100 |
-| risco documental | 15% | eventos negativos × 15, limitado a 100 |
+| Componente                | Peso | Regra atual                                                           |
+| ------------------------- | ---: | --------------------------------------------------------------------- |
+| estresse de mercado       |  30% | média do valor absoluto da variação de 20 pregões × 4, limitada a 100 |
+| eventos negativos         |  35% | cancelamento, atraso ou renegociação × 25, limitado a 100             |
+| estresse de financiamento |  20% | eventos de financiamento × 20, limitado a 100                         |
+| risco documental          |  15% | eventos negativos × 15, limitado a 100                                |
 
 Cobertura mínima: **60%** dos pesos observáveis. Abaixo disso o resultado é `null` e a interface mostra “dados insuficientes”. Variações de 1, 5 e 20 pregões usam linhas de fechamento, nunca dias corridos. Em feriados/fins de semana, o worker preserva a data da última linha fornecida pelo provedor. O provedor de mercado fica desabilitado por padrão; preços só são públicos quando `redistributable=true`.
 

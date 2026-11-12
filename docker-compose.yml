@@ -1,7 +1,8 @@
 services:
   postgres:
     image: postgres:16-alpine
-    environment: { POSTGRES_USER: radar, POSTGRES_PASSWORD: radar, POSTGRES_DB: radar_ia }
+    environment:
+      { POSTGRES_USER: radar, POSTGRES_PASSWORD: radar, POSTGRES_DB: radar_ia }
     ports: ["5432:5432"]
     volumes: [radar_pg:/var/lib/postgresql/data]
     healthcheck:
@@ -29,6 +30,11 @@ services:
   worker:
     profiles: [worker]
     build: { context: apps/worker }
-    environment: { API_URL: http://api:3001/v1, INGEST_TOKEN: local-ingest-token, WORKER_MODE: demo }
+    environment:
+      {
+        API_URL: http://api:3001/v1,
+        INGEST_TOKEN: local-ingest-token,
+        WORKER_MODE: demo,
+      }
     depends_on: [api]
 volumes: { radar_pg: {} }

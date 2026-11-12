@@ -1,4 +1,100 @@
-"use client";import {useMemo,useState} from "react";
-type Event={id:string;type:string;title:string;region:string;occurredAt:string;confidence:string;company:{name:string;slug:string};evidence:{sourceUrl:string}};
-const labels:Record<string,string>={CANCELLATION:"Cancelamento",DELAY:"Atraso",RENEGOTIATION:"Renegociação",CONTRACT:"Contrato",FINANCING:"Financiamento"};
-export function Timeline({events}:{events:Event[]}){const[company,setCompany]=useState(""),[type,setType]=useState("");const filtered=useMemo(()=>events.filter(e=>(!company||e.company.slug===company)&&(!type||e.type===type)),[events,company,type]);return <section id="linha-do-tempo" className="mt-16"><div className="flex flex-wrap justify-between gap-4 items-end"><div><p className="eyebrow text-[#df3b2f]">Monitor contínuo</p><h2 className="serif text-4xl mt-2">Linha do tempo</h2></div><div className="flex gap-2"><select aria-label="Filtrar empresa" value={company} onChange={e=>setCompany(e.target.value)} className="bg-transparent border border-[#bdb7a8] rounded-full px-3 py-2 text-sm"><option value="">Todas as empresas</option>{[...new Map(events.map(e=>[e.company.slug,e.company])).values()].map(c=><option key={c.slug} value={c.slug}>{c.name}</option>)}</select><select aria-label="Filtrar tipo" value={type} onChange={e=>setType(e.target.value)} className="bg-transparent border border-[#bdb7a8] rounded-full px-3 py-2 text-sm"><option value="">Todos os tipos</option>{Object.entries(labels).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></div></div><div className="mt-7 border-l border-[#aaa493] ml-3">{filtered.map(e=><article key={e.id} className="relative pl-7 pb-8"><span className="absolute -left-1.5 top-1 w-3 h-3 rounded-full bg-[#f4f1e8] border-[3px] border-[#1a7352]"/><div className="flex flex-wrap gap-2 items-center"><span className="pill">{labels[e.type]??e.type}</span><span className="pill text-gray-500">{e.confidence.toLowerCase()}</span><time className="text-xs text-gray-500">{new Date(e.occurredAt).toLocaleDateString("pt-BR")}</time></div><h3 className="serif text-xl mt-2">{e.title}</h3><p className="text-sm text-gray-600 mt-1">{e.company.name} · {e.region} · <a className="link" href={e.evidence.sourceUrl} target="_blank">ver evidência ↗</a></p></article>)}{!filtered.length&&<p className="pl-7 text-gray-500">Nenhum evento com estes filtros.</p>}</div></section>}
+"use client";
+import { useMemo, useState } from "react";
+type Event = {
+  id: string;
+  type: string;
+  title: string;
+  region: string;
+  occurredAt: string;
+  confidence: string;
+  company: { name: string; slug: string };
+  evidence: { sourceUrl: string };
+};
+const labels: Record<string, string> = {
+  CANCELLATION: "Cancelamento",
+  DELAY: "Atraso",
+  RENEGOTIATION: "Renegociação",
+  CONTRACT: "Contrato",
+  FINANCING: "Financiamento",
+};
+export function Timeline({ events }: { events: Event[] }) {
+  const [company, setCompany] = useState(""),
+    [type, setType] = useState("");
+  const filtered = useMemo(
+    () =>
+      events.filter(
+        (e) =>
+          (!company || e.company.slug === company) &&
+          (!type || e.type === type),
+      ),
+    [events, company, type],
+  );
+  return (
+    <section id="linha-do-tempo" className="mt-16">
+      <div className="flex flex-wrap justify-between gap-4 items-end">
+        <div>
+          <p className="eyebrow text-[#df3b2f]">Monitor contínuo</p>
+          <h2 className="serif text-4xl mt-2">Linha do tempo</h2>
+        </div>
+        <div className="flex gap-2">
+          <select
+            aria-label="Filtrar empresa"
+            value={company}
+            onChange={(e) => setCompany(e.target.value)}
+            className="bg-transparent border border-[#bdb7a8] rounded-full px-3 py-2 text-sm"
+          >
+            <option value="">Todas as empresas</option>
+            {[
+              ...new Map(
+                events.map((e) => [e.company.slug, e.company]),
+              ).values(),
+            ].map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <select
+            aria-label="Filtrar tipo"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="bg-transparent border border-[#bdb7a8] rounded-full px-3 py-2 text-sm"
+          >
+            <option value="">Todos os tipos</option>
+            {Object.entries(labels).map(([k, v]) => (
+              <option key={k} value={k}>
+                {v}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="mt-7 border-l border-[#aaa493] ml-3">
+        {filtered.map((e) => (
+          <article key={e.id} className="relative pl-7 pb-8">
+            <span className="absolute -left-1.5 top-1 w-3 h-3 rounded-full bg-[#f4f1e8] border-[3px] border-[#1a7352]" />
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="pill">{labels[e.type] ?? e.type}</span>
+              <span className="pill text-gray-500">
+                {e.confidence.toLowerCase()}
+              </span>
+              <time className="text-xs text-gray-500">
+                {new Date(e.occurredAt).toLocaleDateString("pt-BR")}
+              </time>
+            </div>
+            <h3 className="serif text-xl mt-2">{e.title}</h3>
+            <p className="text-sm text-gray-600 mt-1">
+              {e.company.name} · {e.region} ·{" "}
+              <a className="link" href={e.evidence.sourceUrl} target="_blank">
+                ver evidência ↗
+              </a>
+            </p>
+          </article>
+        ))}
+        {!filtered.length && (
+          <p className="pl-7 text-gray-500">Nenhum evento com estes filtros.</p>
+        )}
+      </div>
+    </section>
+  );
+}
